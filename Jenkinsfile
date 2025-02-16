@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/harini1810/flask.git'
+                git branch: 'main', url: 'https://github.com/harini1810/flask.git'
             }
         }
 
@@ -19,7 +19,7 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    bat 'docker run -d -p 5000:5000 flask-app:latest'
+                    bat 'docker run -d -p 5000:5000 --name flask-container flask-app:latest'
                 }
             }
         }
@@ -27,8 +27,8 @@ pipeline {
         stage('Cleanup') {
             steps {
                 script {
-                    bat 'docker stop $(docker ps -q --filter ancestor=flask-app:latest)'
-                    bat 'docker rm $(docker ps -aq --filter ancestor=flask-app:latest)'
+                    bat 'docker stop flask-container'
+                    bat 'docker rm flask-container'
                 }
             }
         }
